@@ -1,0 +1,20 @@
+package urlshortener
+
+import (
+	"os"
+	"testing"
+)
+
+func makeFile(t *testing.T, filePath string, content string) {
+	t.Helper()
+	// file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	// if err != nil {
+	// 	t.Errorf("Couldn't open file: %s\n%s\n", filePath, err.Error())
+	// }
+	// file.Write(content)
+	// defer file.Close()
+	err := os.WriteFile(filePath, []byte(content), 0644)
+	if err != nil {
+		t.Fatalf("Couldn't write to file `%s`: %s", filePath, err.Error())
+	}
+}
