@@ -10,6 +10,8 @@ Story is provided with json file
 
 ## Getting Started
 
+### Quick Start
+
 ```bash
 make run
 ```

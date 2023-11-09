@@ -5,6 +5,8 @@ Play quiz game with custom questions and time limit
 
 ## Getting Started
 
+### Quick Start
+
 ```bash
 go run main.go [options]
 ```

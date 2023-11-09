@@ -8,6 +8,8 @@ Mapping is given through json and/or yaml files and/or postgres db
 
 ## Getting Started
 
+### Quick Start
+
 ```bash
 go run main.go [options]
 ```
