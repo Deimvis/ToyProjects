@@ -1,6 +1,7 @@
 package urlshortener
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -15,16 +16,27 @@ func NewMapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Ha
 	}
 }
 
-func NewYAMLHandler(filepath string, fallback http.Handler) (http.HandlerFunc, error) {
-	pathsToUrls, err := parseYAML(filepath)
+func NewYAMLHandler(filePath string, fallback http.Handler) (http.HandlerFunc, error) {
+	pathsToUrls, err := parseYAML(filePath)
 	if err != nil {
 		return nil, err
 	}
 	return NewMapHandler(pathsToUrls, fallback), nil
 }
 
-func NewJSONHandler(filepath string, fallback http.Handler) (http.HandlerFunc, error) {
-	pathToUrls, err := parseJSON(filepath)
+func NewJSONHandler(filePath string, fallback http.Handler) (http.HandlerFunc, error) {
+	pathToUrls, err := parseJSON(filePath)
+	if err != nil {
+		return nil, err
+	}
+	return NewMapHandler(pathToUrls, fallback), nil
+}
+
+func NewPostgresHandler(tableName string, fallback http.Handler) (http.HandlerFunc, error) {
+	if !isSafeTableName(tableName) {
+		return nil, fmt.Errorf("got not safe table name: `%s` (please, do not inject anything)", tableName)
+	}
+	pathToUrls, err := parsePostgres(tableName)
 	if err != nil {
 		return nil, err
 	}
