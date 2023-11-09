@@ -1,4 +1,5 @@
 # URL Shortener
+
 _Inspired by [Gophercises](https://courses.calhoun.io/courses/cor_gophercises)_
 
 HTTP Server that redirects to endpoint by mapping paths to endpoint urls
