@@ -4,16 +4,22 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"math/rand"
 	"os"
+	"strings"
 	"time"
 )
 
 func main() {
 	csvFilepath := flag.String("problems", "problems.csv", "Path to csv file in the format of 'quesetion,answer'")
 	timeLimit := flag.Int("time-limit", 30, "The time limit for the quiz (in seconds)")
+	shuffle := flag.Bool("shuffle", false, "Shuffle problemset")
 	flag.Parse()
 
 	problems := extractProblems(*csvFilepath)
+	if *shuffle {
+		rand.Shuffle(len(problems), func(i, j int) { problems[i], problems[j] = problems[j], problems[i] })
+	}
 	timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
 	correct := 0
 	for i, p := range problems {
@@ -22,7 +28,10 @@ func main() {
 		if !ok {
 			break
 		}
-		if answer == p.a {
+		canonize := func(s string) string {
+			return strings.ToLower(strings.TrimSpace(s))
+		}
+		if canonize(answer) == canonize(p.a) {
 			correct++
 		}
 	}
