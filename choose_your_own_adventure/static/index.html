@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Own Adventure</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <section class="page">
+    <h1>{{.Title}}</h1>
+    {{range .Paragraphs}}
+    <p>{{.}}</p>
+    {{end}}
+    <ul>
+        {{if .Options}}
+            {{range .Options}}
+            <li><a href="/{{.ChapterTitle}}">{{.Text}}</a></li>
+            {{end}}
+        {{else}}
+            <li><i><a href="/">Play story again</a></i></li>
+        {{end}}
+    </ul>
+    </section>
+</body>
+</html>
