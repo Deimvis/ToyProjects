@@ -17,7 +17,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer f.Close()
-	links, err := hlp.ParseLinks(f)
+	links, err := hlp.ParseLinks(f) // or hlp.ParseLinksSimple(f)
 	if err != nil {
 		fmt.Printf("Failed to parse links\n%s\n", err.Error())
 		os.Exit(1)

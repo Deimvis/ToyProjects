@@ -1,9 +1,11 @@
 package hlp
 
 import (
+	"bytes"
 	"io"
 	"strings"
 
+	"github.com/anaskhan96/soup"
 	"golang.org/x/net/html"
 )
 
@@ -51,4 +53,16 @@ func newLink(n *html.Node) *Link {
 		}
 	}
 	return &l
+}
+
+func ParseLinksSimple(r io.Reader) ([]Link, error) {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(r)
+	s := buf.String()
+	doc := soup.HTMLParse(s)
+	var links []Link
+	for _, aTag := range doc.FindAll("a") {
+		links = append(links, Link{aTag.Attrs()["href"], aTag.Text()})
+	}
+	return links, nil
 }
