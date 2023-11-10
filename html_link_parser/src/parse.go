@@ -16,7 +16,7 @@ func ParseLinks(r io.Reader) ([]Link, error) {
 	if err != nil {
 		return nil, err
 	}
-	var links []Link
+	links := []Link{}
 	dfs(doc, &links)
 	return links, nil
 }
@@ -35,8 +35,10 @@ func dfs(n *html.Node, links *[]Link) string {
 	text := textB.String()
 	if isAtag(n) {
 		link := newLink(n)
-		link.Text = text
-		*links = append(*links, *link)
+		if link != nil {
+			link.Text = text
+			*links = append(*links, *link)
+		}
 	}
 	return text
 }
@@ -50,9 +52,10 @@ func newLink(n *html.Node) *Link {
 	for _, attr := range n.Attr {
 		if attr.Key == "href" {
 			l.Href = attr.Val
+			return &l
 		}
 	}
-	return &l
+	return nil
 }
 
 func ParseLinksSimple(r io.Reader) ([]Link, error) {
@@ -61,7 +64,7 @@ func ParseLinksSimple(r io.Reader) ([]Link, error) {
 	s := buf.String()
 	doc := soup.HTMLParse(s)
 	var links []Link
-	for _, aTag := range doc.FindAll("a") {
+	for _, aTag := range doc.FindAll("a[href]") {
 		links = append(links, Link{aTag.Attrs()["href"], aTag.Text()})
 	}
 	return links, nil

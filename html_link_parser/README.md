@@ -4,7 +4,7 @@ _Inspired by [Gophercises](https://courses.calhoun.io/courses/cor_gophercises)_
 
 Program that parses all links from html document
 
-All anchor tags are considered links
+All anchor tags with "href" attribute are considered links
 
 ## Getting Started
 

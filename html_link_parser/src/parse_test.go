@@ -40,9 +40,10 @@ func TestDfs(t *testing.T) {
 			{"https://twitter.com/marcusolsson", "@marcusolsson"},
 		}},
 		{"../test_data/comments.html", []Link{{"/dog-cat", "dog cat "}}},
+		{"../test_data/no_href.html", []Link{}},
 	}
 	for _, tc := range testCases {
-		var links []Link
+		links := []Link{}
 		dfs(buildDoc(t, tc.htmlFilePath), &links)
 		require.Equal(t, tc.expected, links, "html file: %s", tc.htmlFilePath)
 	}
