@@ -19,6 +19,7 @@ func parsePostgres(tableName string) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer db.Close()
 	rows, err := db.Query(fmt.Sprintf("SELECT path, url FROM \"%s\"", tableName))
 	if err != nil {
 		return nil, err
