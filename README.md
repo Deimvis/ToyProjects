@@ -24,7 +24,9 @@ Little projects that made me a little better engineer
 
 * [Choose Your Own Adventure](choose_your_own_adventure)
 * [CLI Task Manager](cli_task_manager)
+* [Serialization Profiler](serialization_profiler)
 * [Sitemap Builder](sitemap_bulider)
+* [FastAPI Form Generator](fastapi_form_generator)
 * [Url Shortener](url_shortener)
 * [Deck of Cards](deck_of_cards)
 * [Quiz Game](quiz_game)
