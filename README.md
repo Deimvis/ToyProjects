@@ -17,6 +17,7 @@ Little projects that made me a little better engineer
 
 ### Python Projects
 
+* [FastAPI Form Generator](fastapi_form_generator)
 * [Serialization Profiler](serialization_profiler)
 
 ## ORDER BY Awesomeness DESC
