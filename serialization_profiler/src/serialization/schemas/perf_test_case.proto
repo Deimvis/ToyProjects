@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message TPerfTestCase {
+    string string_key = 1;
+    int64 int_key = 2;
+    float float_key = 3;
+    repeated string array_key = 4;
+    map<string, string> map_key = 5;
+}

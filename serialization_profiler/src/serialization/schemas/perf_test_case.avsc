@@ -1,0 +1,12 @@
+{
+    "namespace": "com.deimvis",
+    "type": "record",
+    "name": "TPerfTestCase",
+    "fields": [
+        {"name": "string_key", "type": "string"},
+        {"name": "int_key", "type": "long"},
+        {"name": "float_key", "type": "float"},
+        {"name": "array_key", "type": {"type": "array", "items": "string"}},
+        {"name": "map_key", "type": {"type": "map", "values": "string"}}
+    ]
+}

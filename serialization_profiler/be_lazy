@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./scripts/build && ./scripts/run && ./scripts/test && ./scripts/stop

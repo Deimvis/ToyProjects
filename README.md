@@ -15,6 +15,10 @@ Little projects that made me a little better engineer
 * [Sitemap Builder](sitemap_bulider)
 * [Url Shortener](url_shortener)
 
+### Python Projects
+
+* [Serialization Profiler](serialization_profiler)
+
 ## ORDER BY Awesomeness DESC
 
 * [Choose Your Own Adventure](choose_your_own_adventure)

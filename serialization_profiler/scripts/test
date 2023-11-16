@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+while ! nc -z -w 1 -u localhost 2000; do sleep 1; done
+while ! echo 'get_result avro' | nc -u localhost 2000 -w 3; do sleep 1; done
+echo 'get_result avro' | nc -u localhost 2000 -w 3
+echo 'get_result json' | nc -u localhost 2000 -w 3
+echo 'get_result msgpack' | nc -u localhost 2000 -w 3
+echo 'get_result protobuf' | nc -u localhost 2000 -w 3
+echo 'get_result python_native' | nc -u localhost 2000 -w 3
+echo 'get_result xml' | nc -u localhost 2000 -w 3

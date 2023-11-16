@@ -1,0 +1,71 @@
+version: "3"
+
+services:
+
+  avro:
+    build: .
+    command: worker avro --host 0.0.0.0 --port 10001
+    ports:
+      - "10001:10001/udp"
+
+  json:
+    build: .
+    command: worker json --host 0.0.0.0 --port 10002
+    ports:
+      - "10002:10002/udp"
+
+  msgpack:
+    build: .
+    command: worker msgpack --host 0.0.0.0 --port 10003
+    ports:
+      - "10003:10003/udp"
+
+  protobuf:
+    build: .
+    command: worker protobuf --host 0.0.0.0 --port 10004
+    ports:
+      - "10004:10004/udp"
+
+  python_native:
+    build: .
+    command: worker python_native --host 0.0.0.0 --port 10005
+    ports:
+      - "10005:10005/udp"
+
+  xml:
+    build: .
+    command: worker xml --host 0.0.0.0 --port 10006
+    ports:
+      - "10006:10006/udp"
+
+  proxy:
+    build: .
+    command: [
+      "proxy",
+      "--host", "0.0.0.0",
+      "--port", "2000",
+      "--avro-worker-address", "avro:10001",
+      "--json-worker-address", "json:10002",
+      "--msgpack-worker-address", "msgpack:10003",
+      "--protobuf-worker-address", "protobuf:10004",
+      "--python_native-worker-address", "python_native:10005",
+      "--xml-worker-address", "xml:10006",
+    ]
+    ports:
+      - "2000:2000/udp"
+    links:
+      - avro
+      - json
+      - msgpack
+      - protobuf
+      - python_native
+      - xml
+    depends_on:
+      - avro
+      - json
+      - msgpack
+      - protobuf
+      - python_native
+      - xml
+    environment:
+      - DEBUG=1

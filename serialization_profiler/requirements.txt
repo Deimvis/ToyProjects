@@ -1,0 +1,4 @@
+avro~=1.11.1
+msgpack~=1.0.5
+protobuf~=4.22.3
+xml-marshaller~=1.0.2
