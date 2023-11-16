@@ -7,7 +7,7 @@ import (
 )
 
 // New returns a new deck (slice of cards)
-func New(opts ...func([]Card) []Card) []Card {
+func New(opts ...func([]Card) []Card) Deck {
 	var cards []Card
 	for _, suit := range suits {
 		for rank := minRank; rank <= maxRank; rank++ {
@@ -89,10 +89,10 @@ func Filter(f func(card Card) bool) func([]Card) []Card {
 	}
 }
 
-// Decks takes a number of copies of decks to be created
+// Copies takes a number of copies of decks to be created
 // and returns an option for New funciton.
-// For example: Decks(3) means that deck should contain 3 copies of itself
-func Decks(n int) func([]Card) []Card {
+// For example: Copies(3) means that deck should contain 3 copies of itself
+func Copies(n int) func([]Card) []Card {
 	return func(cards []Card) []Card {
 		return repeat(cards, n)
 	}

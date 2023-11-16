@@ -61,8 +61,8 @@ func TestExclude(t *testing.T) {
 	}
 }
 
-func TestDecks(t *testing.T) {
-	cards := New(Decks(3))
+func TestCopies(t *testing.T) {
+	cards := New(Copies(3))
 	require.Equal(t, expectedDeckSz*3, len(cards))
 }
 

@@ -4,6 +4,25 @@ package deck
 
 import "fmt"
 
+type Deck []Card
+
+func (d *Deck) Draw(n int) ([]Card, error) {
+	if len(*d) < n {
+		return nil, fmt.Errorf("not enough cards in deck to draw: %d < %d", len(*d), n)
+	}
+	var cards []Card
+	cards, *d = (*d)[:n], (*d)[n:]
+	return cards, nil
+}
+
+func (d *Deck) DrawOne() (Card, error) {
+	cards, err := d.Draw(1)
+	if err != nil {
+		return Card{}, err
+	}
+	return cards[0], nil
+}
+
 // A Card represents playing card.
 // The zero value for Card is not a valid card
 type Card struct {
