@@ -6,6 +6,7 @@ Little projects that made me a little better engineer
 
 ### Golang Projects
 
+* [Blackjack](blackjack)
 * [Choose Your Own Adventure](choose_your_own_adventure)
 * [CLI Task Manager](cli_task_manager)
 * [Deck of Cards](deck_of_cards)
@@ -23,6 +24,7 @@ Little projects that made me a little better engineer
 ## ORDER BY Awesomeness DESC
 
 * [Choose Your Own Adventure](choose_your_own_adventure)
+* [Blackjack](blackjack)
 * [CLI Task Manager](cli_task_manager)
 * [Serialization Profiler](serialization_profiler)
 * [Sitemap Builder](sitemap_bulider)

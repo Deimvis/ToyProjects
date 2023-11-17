@@ -4,8 +4,13 @@ package deck
 
 import "fmt"
 
+// Deck
+// A Deck represents a deck of playing cards
 type Deck []Card
 
+// Draw takes number of cards to draw from the top of the deck
+// and returns these cards.
+// It returns an error if there are not enough cards in the deck
 func (d *Deck) Draw(n int) ([]Card, error) {
 	if len(*d) < n {
 		return nil, fmt.Errorf("not enough cards in deck to draw: %d < %d", len(*d), n)
@@ -15,6 +20,8 @@ func (d *Deck) Draw(n int) ([]Card, error) {
 	return cards, nil
 }
 
+// DrawOne draws one card from the top of the deck
+// Basically, the same as Draw(1)
 func (d *Deck) DrawOne() (Card, error) {
 	cards, err := d.Draw(1)
 	if err != nil {
