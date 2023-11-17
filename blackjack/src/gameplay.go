@@ -20,7 +20,6 @@ func (gs *GameState) processPlayStage() {
 					panic(r)
 				}
 			}
-			recover()
 		}()
 		p.Play(NewPlayerAPI(gs, &gs.Players[i]))
 	}
