@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	var port, numStories int
 	flag.IntVar(&port, "port", 3000, "the port to start the web server on")
 	flag.IntVar(&numStories, "num_stories", 30, "the number of top stories to display")
@@ -23,16 +25,17 @@ func main() {
 }
 
 func handler(numStories int, tpl *template.Template) http.HandlerFunc {
+	fetcher := quiet_hn.NewHNAPIFetcher()
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		stories, err := getTopStories(numStories)
+		stories, err := fetcher.FetchTopStories(numStories)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		data := templateData{
 			Stories: stories,
-			Time:    time.Now().Sub(start),
+			Time:    time.Since(start),
 		}
 		err = tpl.Execute(w, data)
 		if err != nil {
@@ -40,12 +43,6 @@ func handler(numStories int, tpl *template.Template) http.HandlerFunc {
 			return
 		}
 	})
-}
-
-func getTopStories(numStories int) ([]quiet_hn.Story, error) {
-	fetcher := quiet_hn.NewHNAPIFetcher()
-	stories, err := fetcher.FetchTopStories(numStories)
-	return stories, err
 }
 
 type templateData struct {

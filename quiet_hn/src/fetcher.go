@@ -1,7 +1,8 @@
 package quiet_hn
 
 import (
-	"errors"
+	"fmt"
+	"log"
 	"net/url"
 	"sort"
 	"strings"
@@ -9,19 +10,20 @@ import (
 	"github.com/Deimvis/toyprojects/quiet_hn/hn"
 )
 
+// HNAPIFetcher is thread-safe
 type HNAPIFetcher struct {
-	client hn.Client
+	client hn.Client                    // thread-safe
+	cache  Cache[int, storyFetchResult] // thread-safe
 }
 
 func NewHNAPIFetcher() HNAPIFetcher {
-	return HNAPIFetcher{client: hn.Client{}}
+	return HNAPIFetcher{client: hn.NewClient(), cache: NewCacheWithTTL[int, storyFetchResult]()}
 }
 
 func (f HNAPIFetcher) FetchTopStories(n int) ([]Story, error) {
-	var client hn.Client
-	ids, err := client.TopItems()
+	ids, err := f.client.TopItems()
 	if err != nil {
-		return nil, errors.New("Failed to load top stories")
+		return nil, fmt.Errorf("failed to load top stories %s", err.Error())
 	}
 	stories := f.fetchStoriesWithLimit(ids, n)
 	f.orderStoriesByIds(&stories, ids)
@@ -32,9 +34,11 @@ func (f HNAPIFetcher) fetchStoriesWithLimit(ids []int, limit int) []Story {
 	var results []Story
 	start := 0
 	for len(results) < limit && start < len(ids) {
-		batchSize := max(int(float64(limit)*1.1), limit+2)
-		batchSize = min(batchSize, limit-start)
-		batchResults := f.fetch(ids[start : start+batchSize])
+		need := limit - len(results)
+		left := len(ids) - start
+		batchSize := max(int(float64(need)*1.1), need+2)
+		batchSize = min(batchSize, left)
+		batchResults := f.fetchMany(ids[start : start+batchSize])
 		for _, r := range batchResults {
 			if r.err != nil || !isStoryLink(r.story) {
 				continue
@@ -43,19 +47,15 @@ func (f HNAPIFetcher) fetchStoriesWithLimit(ids []int, limit int) []Story {
 		}
 		start += batchSize
 	}
-	return results
+	return results[:limit]
 }
 
-func (f HNAPIFetcher) fetch(ids []int) []storyFetchResult {
+func (f HNAPIFetcher) fetchMany(ids []int) []storyFetchResult {
+	log.Printf("fetch %d stories\n", len(ids))
 	resultCh := make(chan storyFetchResult)
 	for _, id := range ids {
 		go func(id int) {
-			hnStory, err := f.client.GetItem(id)
-			if err != nil {
-				resultCh <- storyFetchResult{err: err}
-			} else {
-				resultCh <- storyFetchResult{story: parseHNItem(hnStory)}
-			}
+			resultCh <- f.fetch(id)
 		}(id)
 	}
 	var results []storyFetchResult
@@ -63,6 +63,23 @@ func (f HNAPIFetcher) fetch(ids []int) []storyFetchResult {
 		results = append(results, <-resultCh)
 	}
 	return results
+}
+
+func (f HNAPIFetcher) fetch(id int) storyFetchResult {
+	if f.cache != nil {
+		if v, ok := f.cache.Get(id); ok {
+			return v
+		}
+	}
+	hnStory, err := f.client.GetItem(id)
+	if err != nil {
+		return storyFetchResult{err: err}
+	}
+	ret := storyFetchResult{story: parseHNItem(hnStory)}
+	if f.cache != nil {
+		f.cache.Put(id, ret)
+	}
+	return ret
 }
 
 func (f HNAPIFetcher) orderStoriesByIds(stories *[]Story, orderedIds []int) {

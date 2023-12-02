@@ -19,16 +19,26 @@ type Client struct {
 	apiBase    string
 }
 
+func NewClient() Client {
+	client := Client{
+		httpClient: http.Client{
+			Timeout: 10 * time.Second,
+		},
+		apiBase: apiBase,
+	}
+	return client
+}
+
 // Making the Client zero value useful without forcing users to do something
 // like `NewClient()`
-func (c *Client) defaultify() {
-	c.httpClient = http.Client{
-		Timeout: 10 * time.Second,
-	}
-	if c.apiBase == "" {
-		c.apiBase = apiBase
-	}
-}
+// func (c *Client) defaultify() {
+// 	c.httpClient = http.Client{
+// 		Timeout: 20 * time.Second,
+// 	}
+// 	if c.apiBase == "" {
+// 		c.apiBase = apiBase
+// 	}
+// }
 
 // TopItems returns the ids of roughly 450 top items in decreasing order. These
 // should map directly to the top 450 things you would see on HN if you visited
@@ -37,7 +47,6 @@ func (c *Client) defaultify() {
 // TopItmes does not filter out job listings or anything else, as the type of
 // each item is unknown without further API calls.
 func (c *Client) TopItems() ([]int, error) {
-	c.defaultify()
 	resp, err := c.httpClient.Get(fmt.Sprintf("%s/topstories.json", c.apiBase))
 	if err != nil {
 		return nil, err
@@ -54,7 +63,6 @@ func (c *Client) TopItems() ([]int, error) {
 
 // GetItem will return the Item defined by the provided ID.
 func (c *Client) GetItem(id int) (Item, error) {
-	c.defaultify()
 	var item Item
 	resp, err := c.httpClient.Get(fmt.Sprintf("%s/item/%d.json", c.apiBase, id))
 	if err != nil {

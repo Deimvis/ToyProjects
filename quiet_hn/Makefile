@@ -1,8 +1,8 @@
 build:
-	@go build -o bin/url_shortener
+	@go build -o bin/quiet_hn
 
 run: build
-	@./bin/url_shortener $(ARGS)
+	@./bin/quiet_hn $(ARGS)
 
 test:
 	@go test -v ./...
