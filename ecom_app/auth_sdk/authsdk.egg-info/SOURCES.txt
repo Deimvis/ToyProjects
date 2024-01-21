@@ -1,0 +1,12 @@
+setup.py
+authsdk/__init__.py
+authsdk/client_side.py
+authsdk/conf.py
+authsdk/exceptions.py
+authsdk/inner.py
+authsdk/models.py
+authsdk.egg-info/PKG-INFO
+authsdk.egg-info/SOURCES.txt
+authsdk.egg-info/dependency_links.txt
+authsdk.egg-info/requires.txt
+authsdk.egg-info/top_level.txt

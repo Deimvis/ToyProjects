@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -ex
+
+python -m pip install ../auth_sdk
+uvicorn main:app --reload

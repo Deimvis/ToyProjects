@@ -1,0 +1,153 @@
+version: "3"
+
+services:
+
+  user_service:
+    build:
+      context: .
+      dockerfile: user_service/Dockerfile
+    container_name: sd_user_service
+    command: "--host 0.0.0.0 --port 8000"
+    env_file:
+      - .env.docker
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+    links:
+      - db
+
+  payment_service:
+    build:
+      context: .
+      dockerfile: payment_service/Dockerfile
+    container_name: sd_payment_service
+    command: "--host 0.0.0.0 --port 8001"
+    env_file:
+      - .env.docker
+    ports:
+      - "8001:8001"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+    links:
+      - db
+
+  warehouse_service:
+    build:
+      context: .
+      dockerfile: warehouse_service/Dockerfile
+    container_name: sd_warehouse_service
+    command: "--host 0.0.0.0 --port 8003"
+    env_file:
+      - .env.docker
+    ports:
+      - "8003:8003"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+    links:
+      - db
+
+  delivery_service:
+    build:
+      context: .
+      dockerfile: delivery_service/Dockerfile
+    container_name: sd_delivery_service
+    command: "--host 0.0.0.0 --port 8004"
+    env_file:
+      - .env.docker
+    ports:
+      - "8004:8004"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+    links:
+      - db
+
+  order_service:
+    build:
+      context: .
+      dockerfile: order_service/Dockerfile
+    container_name: sd_order_service
+    command: "--host 0.0.0.0 --port 8002"
+    env_file:
+      - .env.docker
+    ports:
+      - "8002:8002"
+    depends_on:
+      db:
+        condition: service_healthy
+      warehouse_service:
+        condition: service_healthy
+      delivery_service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+    links:
+      - db
+
+  db:
+    image: postgres:15.2
+    container_name: sd_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5430:5432"
+    env_file:
+      - .env.docker
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U putyournamehere -d ecom"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
+  tester:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+    container_name: sd_tester
+    profiles: [ "test" ]
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+      user_service:
+        condition: service_healthy
+      payment_service:
+        condition: service_healthy
+      warehouse_service:
+        condition: service_healthy
+      delivery_service:
+        condition: service_healthy
+      order_service:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
