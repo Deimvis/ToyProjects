@@ -19,11 +19,13 @@ Little projects that made me a little better engineer
 
 ### Python Projects
 
+* [E-commerce Service-Oriented App](ecom_app)
 * [FastAPI Form Generator](fastapi_form_generator)
 * [Serialization Profiler](serialization_profiler)
 
 ## ORDER BY Awesomeness DESC
 
+* [E-commerce Service-Oriented App](ecom_app)
 * [Choose Your Own Adventure](choose_your_own_adventure)
 * [Blackjack](blackjack)
 * [CLI Task Manager](cli_task_manager)
