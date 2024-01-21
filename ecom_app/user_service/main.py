@@ -62,7 +62,7 @@ async def health():
 async def create_user(user: models.User) -> JSONResponse:
     if await is_user_exists(user.username):
         return JSONResponse(status_code=403, content={'status': 'error', 'error': 'User already exists'})
-    password_hash = authsdk.inner.get_password_hash(user.password)
+    password_hash = authsdk.internal.get_password_hash(user.password)
     query = 'INSERT INTO "user" (username, password_hash, first_name, last_name, email, phone) VALUES ($1, $2, $3, $4, $5, $6);'
     await app.db_pool.execute(query, user.username, password_hash, user.first_name, user.last_name, user.email, user.phone)
     return JSONResponse(status_code=200, content={'status': f'User `{user.username}` was created'})
@@ -83,7 +83,7 @@ async def update_user(user: models.User, current_user: Annotated[models.User, De
         return JSONResponse(status_code=403, content={'status': 'error', 'error': f'Unable to update `{user.username}` from `{current_user.username}'})
     if not await is_user_exists(user.username):
         return JSONResponse(status_code=404, content={'status': 'error', 'error': 'User not found'})
-    password_hash = authsdk.inner.get_password_hash(user.password)
+    password_hash = authsdk.internal.get_password_hash(user.password)
     query = 'UPDATE "user" SET username = $1, password_hash = $2, first_name = $3, last_name = $4, email = $5, phone = $6 WHERE username = $1;'
     await app.db_pool.execute(query, user.username, password_hash, user.first_name, user.last_name, user.email, user.phone)
     return JSONResponse(status_code=200, content={'status': f'User `{user.username}` was updated'})
@@ -123,9 +123,9 @@ async def token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> a
     user = await db.get_user(app.db_pool, form_data.username)
     if user is None:
         raise HTTPBadCredentials
-    if not authsdk.inner.verify_password(form_data.password, user.password_hash):
+    if not authsdk.internal.verify_password(form_data.password, user.password_hash):
         raise HTTPBadCredentials
     return authsdk.models.TokenResponse(
-        access_token=authsdk.inner.create_access_token(subject=user.username),
-        refresh_token=authsdk.inner.create_refresh_token(subject=user.username),
+        access_token=authsdk.internal.create_access_token(subject=user.username),
+        refresh_token=authsdk.internal.create_refresh_token(subject=user.username),
     )
